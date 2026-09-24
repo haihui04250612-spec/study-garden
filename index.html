@@ -122,7 +122,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
 
 <main class="main">
 <div class="top">
- <div><div class="today-title" id="dateTitle"></div><div class="hello">今天也只做今天能做的部分。</div></div>
+ <div><div class="today-title" id="dateTitle"></div><div class="hello">今天也只做今天能做的部分。 <span id="liveClock" aria-live="off"></span></div></div>
  <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
   <button class="softbtn" onclick="exportData()">导出备份</button>
   <button class="softbtn" onclick="document.getElementById('importFile').click()">导入备份</button>
@@ -444,8 +444,14 @@ function importData(input){
  r.readAsText(f);
 }
 
+let shownDate='';
+function updateClock(){
+ const now=new Date(), today=fmt(now);
+ liveClock.textContent='· '+now.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',hour12:false});
+ if(shownDate && shownDate!==today)render();
+}
 function render(){
- let now=new Date();dateTitle.textContent=now.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+ let now=new Date();shownDate=fmt(now);dateTitle.textContent=now.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
  let dd=Math.max(0,Math.ceil((ejuDate-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000));daysEju.textContent=dd+' 天';countdown.textContent='EJU · '+dd+' 天';
  let k=T();seed(k);socTasks.innerHTML=taskHTML('EJU 文综');otherTasks.innerHTML=D.tasks[k].filter(x=>!['EJU 日本語','EJU 文综','Programming'].includes(x.cat)).map((x,i)=>`<label class="check ${x.done?'done':''}"><input type="checkbox" ${x.done?'checked':''} onchange="xDone('${k}',${i})"><span>${esc(x.cat)} · ${esc(x.text)}</span></label>`).join('');renderCycle();
  let all=D.tasks[k],dn=all.filter(x=>x.done).length;doneRate.textContent=dn+' / '+all.length;paperCount.textContent=D.papers.length+' 套';roadCount.textContent=D.road.filter(x=>x[1]).length+' / 6';
@@ -474,6 +480,6 @@ function renderEvents(){let k=T(),ev=[...D.soc.filter(x=>x.date>=k).map(x=>({dat
 function renderStats(){stP.textContent=D.papers.length;stS.textContent=D.soc.length;stR.textContent=D.road.filter(x=>x[1]).length+'/6';chart.innerHTML='';let a=D.papers.map((x,i)=>({v:x.read+x.listen,i}));if(!a.length){chart.innerHTML='<p style="color:#999;padding:20px">保存真题成绩后会显示成绩变化。</p>';return}let max=Math.max(...a.map(x=>x.v),1);a.forEach((x,i)=>{let p=document.createElement('div');p.className='pt';p.title=x.v;p.style.left=(a.length===1?50:5+i*90/(a.length-1))+'%';p.style.bottom=(x.v/max*90)+'%';chart.appendChild(p)})}
 function showView(id){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===id))}
 document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>showView(b.dataset.view));
-pDate.value=T();sDate.value=T();render();
+pDate.value=T();sDate.value=T();render();updateClock();setInterval(updateClock,1000);
 </script>
 </body></html>
