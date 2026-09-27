@@ -222,7 +222,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
 <section class="view" id="socV">
  <div class="layout"><div>
  <div class="card"><div class="head"><h2>EJU 文综 · 复习安排</h2><a class="softbtn" style="text-decoration:none;color:inherit" href="https://eju-study-room.haihui04250612.chatgpt.site/#today" target="_blank" rel="noopener noreferrer">打开文综研习室 ↗</a></div>
-  <p>在这里安排每周目标；到研习室复习主题、核对扫描笔记、做已确认的闪卡，再看关联真题。研习室的知识点和闪卡进度以研习室为准。</p>
+  <p>按现在的进度：经济已经学过，政治学过一部分。先守住会做的，再用主干和真题速览其余范围。每周任务是可拆开的方向，不要求把研习室所有笔记逐页学完。</p>
   <div id="socStudyWeeks"></div>
  </div>
  <div class="card" style="margin-top:14px"><h2>一对一课程</h2><p style="color:var(--muted)">不设置固定上课日。每次和老师约好下一次时间后，再添加到对应日期。</p>
@@ -317,18 +317,18 @@ const KEY='studyGardenV2';
 const base={tasks:{},schedules:{},papers:[],soc:[],cycles:[],cycleOffset:0,cycleExtend:0,road:[['Python 基础',false],['Python 小项目',false],['HTML / CSS',false],['JavaScript 基础',false],['Git / GitHub',false],['AI 辅助综合项目',false]],notes:{},code:{}};
 let D=JSON.parse(localStorage.getItem(KEY)||'null')||structuredClone(base);
 if(!D.books)D.books=[];if(!D.readingNotes)D.readingNotes=[];
-if(!D.socStudy)D.socStudy={};
+if(!D.socStudyPlan2)D.socStudyPlan2={};
 const fmt=d=>{let x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
 const T=()=>fmt(new Date()), ejuDate=new Date('2026-11-08T00:00:00'); let cal=new Date();
 const SOC_ROOM='https://eju-study-room.haihui04250612.chatgpt.site/';
 // Study Garden saves only the plan checkmarks. Notes, cards, and review records remain in the private study room.
 const socPlans=[
- {start:'2026-09-27',end:'2026-10-03',title:'经济基础 · 找到因果链',tasks:['经济体制与经济思想、经济主体与企业：各用一个问题串起知识点','供需与市场：先判断原因，再说价格与数量怎样变化','做 1 套文综真题，找出本周主题对应的题','只核对做错题对应的笔记页；能用的正式闪卡按到期复习']},
- {start:'2026-10-04',end:'2026-10-10',title:'经济运行 · 从指标到政策',tasks:['国民所得与景气变化：对照名义 / 实际、通胀 / 通缩','货币与金融政策、财政税收与国债：说清政策→影响的过程','日本经济史：按事件前后关系复述，不只背年份','做 1 套文综真题；把错题归回主题，必要时核对原笔记']},
- {start:'2026-10-11',end:'2026-10-17',title:'政治基础 · 比较制度',tasks:['国家与民主政治、基本人权：用具体场景解释概念','英国与美国政治制度：横向比较行政与立法的关系','美国总统与历史事件：按背景→人物→事件复述','做 1 套文综真题；用 2026 考纲核对地理、历史、社会的缺口']},
- {start:'2026-10-18',end:'2026-10-23',title:'日本政治 · 贯通制度',tasks:['日本宪法与国民主权、和平主义与安全保障：比较原则与实际制度','日本国会与内阁：沿法律案或预算的流程复述','做 1～2 套真题，记录不会做的地理、历史、社会题','只补高频薄弱点；旧笔记有疑问时回扫描页核对']},
- {start:'2026-10-24',end:'2026-10-30',title:'模拟与补缺 · 练习取舍',tasks:['做 2 套文综 80 分钟计时真题，记录实际用时与分数','错题分为知识缺口、读题失误、时间压力；优先回看重复出现的主题','对照 2026 考纲补地理、历史、社会；仅整理真题暴露的缺口','研习室里复习到期的正式卡片和高频错题关联笔记']},
- {start:'2026-10-31',end:'2026-11-06',title:'考前回收 · 稳住已会的',tasks:['做 2 套文综 80 分钟计时真题，按考试节奏完成','重做重复错题，整理最容易混淆的概念和图表','用研习室的主题与正式闪卡快速回想，不追求校准全部草稿','留下短清单：考前只看仍会出错的知识点']},
+ {start:'2026-09-27',end:'2026-10-03',title:'摸清起点 · 守住经济',tasks:['已学经济只做回忆与少量真题，忘了的再回研习室看对应笔记','把政治分成「已学 / 没学」，优先挑日本宪法、人权、国会与内阁','做一小组混合真题，记下完全陌生的领域，不急着学完']},
+ {start:'2026-10-04',end:'2026-10-10',title:'政治主干 · 先会判断',tasks:['速过民主政治、日本宪法与人权：每组记住核心原则和一个例子','速过国会、内阁、选举与国际政治：抓机关关系和关键词','做政治相关真题；错题只查对应知识点，已学经济继续少量回忆']},
+ {start:'2026-10-11',end:'2026-10-17',title:'地理速览 · 看图抓线索',tasks:['按 2026 考纲速览地图与时差、气候、人口、资源和产业','做地理题，碰到陌生概念只补一条能辨认选项的线索','把世界史先画成「革命与工业化→两次世界大战→冷战→冷战后」的时间线']},
+ {start:'2026-10-18',end:'2026-10-23',title:'历史与社会 · 保留主干',tasks:['沿时间线速过近代化、两次世界大战、冷战及其后，每段抓起因与结果','社会与经济补缺：环境、劳动、消费者、社会保障、贸易，各记一两个辨认点','做一组混合真题；只补重复出错或一看就不会的基础概念']},
+ {start:'2026-10-24',end:'2026-10-30',title:'真题回收 · 找能拿的分',tasks:['做 1 套文综 80 分钟计时真题，记录没做完与看错题干的地方','把错题分成「没学过 / 记混了 / 来不及」，先补重复出现的基础点','在研习室复习已确认的闪卡和对应笔记；有余力再做第二套']},
+ {start:'2026-10-31',end:'2026-11-06',title:'考前巩固 · 少而准',tasks:['做 1 套文综 80 分钟计时真题，练遇到陌生题及时往下做','只重做重复错题，复习经济与政治已会的主干','整理一张考前短清单；有余力再做一套，不追求学完所有笔记']},
  {start:'2026-11-07',end:'2026-11-07',title:'考前一天 · 轻量回顾',tasks:['只看短清单与反复错题，不再开新整卷','检查考试用品与路线，留出休息时间']}
 ];
 function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
@@ -344,22 +344,22 @@ function taskHTML(cat,id){
 }
 function toggleSocStudy(start,index){
  const plan=socPlans.find(p=>p.start===start);if(!plan||index<0||index>=plan.tasks.length)return;
- if(!Array.isArray(D.socStudy))D.socStudy=D.socStudy&&typeof D.socStudy==='object'?D.socStudy:{};
- if(!Array.isArray(D.socStudy[start]))D.socStudy[start]=[];
- D.socStudy[start][index]=!D.socStudy[start][index];persist();
+ if(!D.socStudyPlan2||typeof D.socStudyPlan2!=='object'||Array.isArray(D.socStudyPlan2))D.socStudyPlan2={};
+ if(!Array.isArray(D.socStudyPlan2[start]))D.socStudyPlan2[start]=[];
+ D.socStudyPlan2[start][index]=!D.socStudyPlan2[start][index];persist();
 }
 function renderSocStudy(){
  const today=T(),plan=socPlans.find(p=>p.start<=today&&today<=p.end);
  const room=`<a href="${SOC_ROOM}#today" target="_blank" rel="noopener noreferrer">去研习室复习 ↗</a>`;
- const checkRows=p=>p.tasks.map((task,i)=>{const checked=!!D.socStudy?.[p.start]?.[i];return `<label class="check ${checked?'done':''}"><input type="checkbox" ${checked?'checked':''} onchange="toggleSocStudy('${p.start}',${i})"><span>${esc(task)}</span></label>`}).join('');
+ const checkRows=p=>p.tasks.map((task,i)=>{const checked=!!D.socStudyPlan2?.[p.start]?.[i];return `<label class="check ${checked?'done':''}"><input type="checkbox" ${checked?'checked':''} onchange="toggleSocStudy('${p.start}',${i})"><span>${esc(task)}</span></label>`}).join('');
  if(plan){
-  const count=plan.tasks.filter((_,i)=>D.socStudy?.[plan.start]?.[i]).length;
+  const count=plan.tasks.filter((_,i)=>D.socStudyPlan2?.[plan.start]?.[i]).length;
   socStudyToday.innerHTML=`<div class="weekLabel">本周 · ${plan.start.slice(5)}—${plan.end.slice(5)}</div><h3>${esc(plan.title)}</h3><p>不规定哪天完成；进入研习室后，从本周主题开始。${room}</p>${checkRows(plan)}<div class="weekProgress">本周 ${count} / ${plan.tasks.length} 项已完成 · <a href="#" onclick="showView('socV');return false">看完整安排</a></div>`;
  }else{
   socStudyToday.innerHTML=today>'2026-11-07'?`<h3>11/8 · EJU 本番</h3><p>今天按自己的节奏来。${room}</p>`:`<h3>文综复习</h3><p>复习安排从 9/27 开始。${room}</p>`;
  }
  socStudyWeeks.innerHTML=socPlans.map(p=>{
-  const count=p.tasks.filter((_,i)=>D.socStudy?.[p.start]?.[i]).length;
+  const count=p.tasks.filter((_,i)=>D.socStudyPlan2?.[p.start]?.[i]).length;
   return `<section class="socWeek ${p===plan?'current':''}"><h3>${p.start.slice(5)}—${p.end.slice(5)} · ${esc(p.title)}</h3>${checkRows(p)}<small>${count} / ${p.tasks.length} 项已完成</small></section>`
  }).join('')+`<p class="small">研习室里已有经济、政治的主题整理；地理、历史和社会先依照 <a href="https://www.jasso.go.jp/ryugaku/eju/examinee/syllabus/japan_theworld.html" target="_blank" rel="noopener noreferrer">2026 年官方考纲 ↗</a> 与真题补缺。这里的勾选只记录本周安排，研习室内的闪卡和校准进度不会自动同步。</p>`;
 }
