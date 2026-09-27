@@ -87,6 +87,8 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
 .socStudy .check{border-top:1px solid #f0e8e6;padding:9px 0}
 .socStudy .check span{font-size:14px}.socStudy .weekLabel{color:#8b6a6d;font-size:13px;font-weight:700}
 .socStudy .weekProgress{margin:8px 0 0;color:#6c6967;font-size:13px}
+.socStudySpot{margin:0 0 14px;padding:18px 20px;background:#fff4f1;box-shadow:var(--shadow)}
+.socStudySpot h3{font-size:19px}.socStudySpot .weekProgress a{font-size:14px}
 .socWeek{border:1px solid var(--line);border-radius:18px;padding:15px;margin:10px 0;background:#fff}
 .socWeek.current{background:#fff8f7;border-color:#eacac8}.socWeek h3{margin:0 0 6px;font-size:16px}
 .socWeek p{margin:0 0 6px}.socWeek small{color:#787875}
@@ -143,6 +145,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
 </div>
 
 <section class="view active" id="today">
+ <div class="socStudy socStudySpot" id="socStudyToday" aria-label="本周文综复习计划"></div>
  <div class="summary">
   <div class="sum"><small>距离 EJU</small><b id="daysEju">-- 天</b></div>
   <div class="sum"><small>今日完成</small><b id="doneRate">0 / 0</b></div>
@@ -165,7 +168,6 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
     <div id="socTasks"></div>
     <div id="otherTasks"></div>
     <div class="small" style="margin-top:8px">一对一课程仍在约好后加入对应日期；下面的自习目标可在本周任意一天完成。</div>
-    <div class="socStudy" id="socStudyToday"></div>
    </div>
    <div class="card" style="margin-top:14px">
     <div class="head"><h2>◷ 今日日程</h2><button class="softbtn" onclick="addSchedule()">＋ 添加</button></div>
@@ -534,8 +536,16 @@ function renderCal(){
 function moveMonth(n){cal=new Date(cal.getFullYear(),cal.getMonth()+n,1);renderCal()}
 function renderEvents(){let k=T(),ev=[...D.soc.filter(x=>x.date>=k).map(x=>({date:x.date,text:`${x.time} 文综一对一${x.topic?' · '+x.topic:''}`})),{date:'2026-11-08',text:'EJU 本番'}].sort((a,b)=>a.date.localeCompare(b.date)).slice(0,6);events.innerHTML=ev.map(x=>`<div class="event"><i></i><div><b>${x.date}</b><br>${esc(x.text)}</div></div>`).join('')}
 function renderStats(){stP.textContent=D.papers.length;stS.textContent=D.soc.length;stR.textContent=D.road.filter(x=>x[1]).length+'/6';chart.innerHTML='';let a=D.papers.map((x,i)=>({v:x.read+x.listen,i}));if(!a.length){chart.innerHTML='<p style="color:#999;padding:20px">保存真题成绩后会显示成绩变化。</p>';return}let max=Math.max(...a.map(x=>x.v),1);a.forEach((x,i)=>{let p=document.createElement('div');p.className='pt';p.title=x.v;p.style.left=(a.length===1?50:5+i*90/(a.length-1))+'%';p.style.bottom=(x.v/max*90)+'%';chart.appendChild(p)})}
-function showView(id){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===id))}
+function showView(id,fromHash=false){
+ const target=document.getElementById(id);if(!target?.classList.contains('view'))return;
+ document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===id));
+ document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===id));
+ if(!fromHash&&location.hash!=='#'+id)history.replaceState(null,'','#'+id);
+ window.scrollTo(0,0);
+}
 document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>showView(b.dataset.view));
+if(location.hash)showView(decodeURIComponent(location.hash.slice(1)),true);
+window.addEventListener('hashchange',()=>showView(decodeURIComponent(location.hash.slice(1)),true));
 const GUESTBOOK_API='https://study-garden-messages.haihui04250612.chatgpt.site/api/messages';
 async function loadGuestbook(){
  const list=document.getElementById('guestList');
