@@ -115,6 +115,24 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
 .guestbook{border-top:1px solid var(--line);margin-top:19px;padding-top:17px}.guestbook h3{margin:0 0 5px;font-size:17px}.guestbook p{margin:0 0 13px;color:#6c7770;font-size:14px;line-height:1.6}.guestbook-form{display:grid;gap:9px}.guestbook-form label{font-size:14px;font-weight:650}.guestbook-form input,.guestbook-form textarea{display:block;margin-top:5px;font-size:16px}.guestbook-form .fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.guestbook-form button{justify-self:start}.guestbook-status{min-height:1.6em;margin:8px 0!important}.guestbook-list{display:grid;gap:9px;max-height:320px;overflow:auto}.guestbook-entry{padding:12px;border-radius:14px;background:#f7faf5;overflow-wrap:anywhere}.guestbook-entry strong{font-size:14px}.guestbook-entry time{font-size:12px;color:#6e786e;margin-left:8px}.guestbook-entry p{white-space:pre-wrap;color:var(--ink);font-size:15px;margin:7px 0 0}
 @media(max-width:450px){.guestbook-form .fields{grid-template-columns:1fr}}
 .ejuFocus #legacyCycle{display:none}.dailyLinks{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.dailyLinks a{padding:7px 11px;border:1px solid #e9c9c3;border-radius:999px;background:#fff;color:#70484d;text-decoration:none;font-weight:700;font-size:12px}.socDay{border:1px solid var(--line);border-radius:16px;margin:9px 0;background:#fff;overflow:hidden}.socDay[open]{border-color:#e8c9c3;background:#fff9f7}.socDay summary{cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;list-style:none}.socDay summary::-webkit-details-marker{display:none}.socDay .dayBody{padding:0 14px 14px}.socDay .dayMeta{font-size:12px;color:#896f6b}.socDay .dayCount{font-size:11px;color:#777;white-space:nowrap}.planWeekTitle{font-size:15px;margin:20px 3px 8px}.dayKinds{display:inline-block;min-width:42px;border-radius:999px;padding:2px 7px;margin-right:7px;background:#f4e8e6;color:#75484c;font-size:11px}.dayKinds.jp{background:#e4f3fb;color:#426e87}.dayKinds.rest{background:#e9f2e5;color:#55704c}.socStudy .check{display:flex}.socStudy .check input{flex:none}.dailyTip{font-size:12px;color:#7b7070;margin:8px 0}.todayDay{font-size:12px;color:#765c5e;font-weight:700}.socStudySpot .dailyLinks{margin:12px 0 3px}.socStudySpot .dailyLinks a{font-size:13px}
+
+.applicationReminder{margin:0 0 14px;border:2px solid #e4c78e;border-radius:24px;background:#fffaf0;padding:18px;box-shadow:var(--shadow)}
+.applicationReminder h2{font-size:22px;margin:0;color:#533a18;font-weight:900}
+.applicationReminder p{margin:4px 0 10px;color:#665a46}
+.applicationReminder .reminderGrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.reminderItem{background:#fff;border-left:7px solid #d88326;border-radius:14px;padding:13px 14px}
+.reminderItem.exam{border-left-color:#cb3838;background:#fff4f3}
+.reminderItem strong{font-size:17px;font-weight:900;display:block;line-height:1.35}
+.reminderItem .phase{font-size:13px;background:#f9e5c5;color:#713b0c;font-weight:900;margin:0 0 5px}
+.reminderItem.exam .phase{background:#f9d7d5;color:#991b1b}
+.reminderItem .action{font-size:16px;line-height:1.5;font-weight:800;color:#29352b;margin:6px 0}
+.reminderItem .alert{background:#fce1df;color:#911e1e;padding:8px;border-radius:9px;font-weight:850;font-size:13px}
+.reminderItem small{color:#6a6a62}
+.reminderItem input[type=time]{width:120px;padding:5px}
+.reminderItem button{border:0;background:#263e31;color:white;border-radius:999px;padding:7px 12px;font-weight:800}
+.reminderTools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:7px 0 13px}
+.reminderTools a{background:#2e4937;color:white;text-decoration:none;border-radius:999px;padding:8px 12px;font-weight:800}
+.calendar .d.applicationMark{outline:2px solid #d88326;outline-offset:-2px}
 </style>
 </head>
 <body>
@@ -146,6 +164,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
 </div>
 
 <section class="view active" id="today">
+ <div id="applicationReminder" class="applicationReminder" aria-live="polite"></div>
  <div class="socStudy socStudySpot" id="socStudyToday" aria-label="今日 EJU 学习计划"></div>
  <div class="summary">
   <div class="sum"><small>距离 EJU</small><b id="daysEju">-- 天</b></div>
@@ -316,8 +335,12 @@ const base={tasks:{},schedules:{},papers:[],soc:[],cycles:[],cycleOffset:0,cycle
 let D=JSON.parse(localStorage.getItem(KEY)||'null')||structuredClone(base);
 if(!D.books)D.books=[];if(!D.readingNotes)D.readingNotes=[];
 if(!D.dailyEju)D.dailyEju={};
+const APPLICATION_WORKBENCH='https://application-season-2027.haihui04250612.chatgpt.site/';
+const initialMilestones=[{"id":"deadline-ryukoku-apply-close","title":"龙谷大学｜前期出愿截止","date":"2026-10-02","note":"文学部哲学专攻与社会学部｜日本国内出愿截止日消印有效。","mode":"post"},{"id":"deadline-teikyo-close","title":"帝京大学｜一期出愿材料必着","date":"2026-10-15","note":"留学生特别选拔一期，材料截止日必着；与明治学院11月21日考试冲突。","mode":"arrival"},{"id":"deadline-meijigakuin-close","title":"明治学院大学｜A留学生出愿截止","date":"2026-10-21","note":"暂定社会学科；缴费与邮寄消印截止。艺术、经济、经营等学科出愿日期不同。","mode":"post"},{"id":"deadline-rissho-close","title":"立正大学｜WEB出愿与材料必着","date":"2026-10-28","note":"文学部哲学科｜WEB登记16:00截止；邮寄材料当日必着。","mode":"arrival"},{"id":"deadline-rissho-exam","title":"立正大学｜外国留学生11月选拔考试","date":"2026-11-22","note":"文学部哲学科｜科目与集合时间以2027年正式要项和受验票为准。","mode":"exam"},{"id":"deadline-nihon-apply-close","title":"日本大学｜文理学部第2期出愿材料必着","date":"2027-01-13","note":"日本大学入试中心收到纸质材料；在日本以简易书留邮寄，窗口不受理。","mode":"arrival"},{"id":"deadline-nihon-exam","title":"日本大学｜文理学部第2期口头试问","date":"2027-02-12","note":"哲学科：EJU日语＋口头试问，文理学部校舍。","mode":"exam"},{"id":"deadline-showa-apply-close","title":"昭和女子大学｜外国人留学生出愿截止","date":"2026-11-30","note":"外国人留学生一般入试｜日本国内邮寄以消印有效，海外邮寄须在期限内必着","mode":"post"},{"id":"deadline-showa-exam","title":"昭和女子大学｜外国人留学生入试","date":"2027-01-09","note":"世田谷校区现场考试；笔试＋面试＋出愿材料综合审查","mode":"exam"},{"id":"deadline-taisho-documents","title":"大正大学｜邮寄材料截止","date":"2026-12-04","note":"必着，不是当日消印有效；邮局窗口简易书留＋速达","mode":"arrival"},{"id":"deadline-taisho-exam","title":"大正大学｜小论文与面试","date":"2026-12-12","note":"巢鸭校区现场考试：小论文约60分钟、面试约15分钟","mode":"exam"},{"id":"deadline-senshu-apply-close","title":"专修大学｜国内 WEB 出愿截止","date":"2026-11-03","note":"文学部哲学科｜17:00 截止","mode":"online"},{"id":"deadline-senshu-documents","title":"专修大学｜国内出愿材料窗口截止","date":"2026-11-06","note":"11月4日—6日，仅本人到校、完全预约制；不接受邮寄","mode":"inperson"},{"id":"deadline-ryukoku-exam","title":"龙谷大学｜第二次考试","date":"2026-11-07","note":"文学部哲学专攻、社会学部均为深草校区；确认报考学科和受验票。","mode":"exam"},{"id":"deadline-meijigakuin-exam","title":"明治学院大学｜A留学生校内考","date":"2026-11-21","note":"白金校区。与帝京大学同日；两校先保留，实际考试需二选一。","mode":"exam"},{"id":"deadline-teikyo-exam","title":"帝京大学｜一期校内考","date":"2026-11-21","note":"八王子校区。与明治学院同日；两校先保留，实际考试需二选一。","mode":"exam"},{"id":"deadline-kanagawa-close","title":"神奈川大学｜网上出愿截止","date":"2026-12-03","note":"东京以外的横滨校区；在日窗口材料也于本日结束。若邮寄，11月27日消印截止。","mode":"online"},{"id":"deadline-kanagawa-post","title":"神奈川大学｜邮寄材料消印截止","date":"2026-11-27","note":"仅选择邮寄出愿时适用；11月27日消印有效，网上出愿与在日窗口截止另为12月3日。","mode":"post"},{"id":"deadline-kanagawa-exam","title":"神奈川大学｜外国留学生选拔","date":"2027-01-24","note":"横滨校区；人间科学部需日语小论文、面试，并参考指定EJU科目。","mode":"exam"},{"id":"deadline-ritsumeikan-apply-close","title":"立命馆大学｜后期出愿截止","date":"2026-11-16","note":"TAO 在线登记、材料上传与检定料支付均须在 23:00 前完成","mode":"online"},{"id":"deadline-senshu-exam","title":"专修大学｜外国留学生入学考试","date":"2027-01-09","note":"文学部哲学科｜面试；集合时间以受验票为准","mode":"exam"},{"id":"deadline-ritsumeikan-interview","title":"立命馆大学｜后期第二次审查","date":"2027-01-09","note":"1月9日或10日；具体日期、时间和方式由学校通知","mode":"exam"},{"id":"eju-2026-nov","title":"2026 年 11 月 EJU 考试","date":"2026-11-08","note":"按受验票核对考场、集合时间、证件与路线。","mode":"exam"},{"id":"deadline-taisho-web","title":"大正大学｜网上登记截止","date":"2026-12-03","note":"16:00 截止；缴费后打印志愿票并邮寄材料","mode":"online"}];
+if(!Array.isArray(D.applicationMilestones))D.applicationMilestones=initialMilestones;
+if(!D.applicationWakeTime)D.applicationWakeTime='07:30';
 const fmt=d=>{let x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
-const T=()=>fmt(new Date()), ejuDate=new Date('2026-11-08T00:00:00'); let cal=new Date();
+const T=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()), ejuDate=new Date('2026-11-08T00:00:00'); let cal=new Date();
 const SOC_ROOM='https://eju-study-room.haihui04250612.chatgpt.site/';
 // Study Garden saves only the plan checkmarks. Notes, cards, and review records remain in the private study room.
 const dailyPlan=[
@@ -992,7 +1015,7 @@ function updateClock(){
 function render(){
  let now=new Date();shownDate=fmt(now);dateTitle.textContent=now.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
  let dd=Math.max(0,Math.ceil((ejuDate-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000));daysEju.textContent=dd+' 天';countdown.textContent='EJU · '+dd+' 天';
- let k=T();document.body.classList.toggle('ejuFocus',k<='2026-11-08');seed(k);socTasks.innerHTML=taskHTML('EJU 文综');otherTasks.innerHTML=D.tasks[k].filter(x=>!['EJU 日本語','EJU 文综','Programming'].includes(x.cat)).map((x,i)=>`<label class="check ${x.done?'done':''}"><input type="checkbox" ${x.done?'checked':''} onchange="xDone('${k}',${i})"><span>${esc(x.cat)} · ${esc(x.text)}</span></label>`).join('');renderCycle();renderSocStudy();
+ let k=T();document.body.classList.toggle('ejuFocus',k<='2026-11-08');seed(k);socTasks.innerHTML=taskHTML('EJU 文综');otherTasks.innerHTML=D.tasks[k].filter(x=>!['EJU 日本語','EJU 文综','Programming'].includes(x.cat)).map((x,i)=>`<label class="check ${x.done?'done':''}"><input type="checkbox" ${x.done?'checked':''} onchange="xDone('${k}',${i})"><span>${esc(x.cat)} · ${esc(x.text)}</span></label>`).join('');renderCycle();renderSocStudy();renderApplicationReminder();
  let plan=dailyPlan.find(x=>x.date===k), all=plan?.tasks||[],dn=all.filter((_,i)=>D.dailyEju?.[k]?.[i]).length;doneRate.textContent=dn+' / '+all.length;paperCount.textContent=D.papers.length+' 套';if(k<='2026-11-08'){fourthLabel.textContent='冲刺进度';const total=dailyPlan.reduce((n,p)=>n+p.tasks.length,0),completed=dailyPlan.reduce((n,p)=>n+p.tasks.filter((_,i)=>D.dailyEju?.[p.date]?.[i]).length,0);roadCount.textContent=completed+' / '+total}else{fourthLabel.textContent='Programming';roadCount.textContent=D.road.filter(x=>x[1]).length+' / 6'}
  timeline.innerHTML=(D.schedules[k]||[]).sort((a,b)=>a.time.localeCompare(b.time)).map((x,i)=>`<div class="slot"><time>${x.time}</time><span class="dot"></span><span>${esc(x.text)}</span><button class="softbtn" onclick="D.schedules['${k}'].splice(${i},1);persist()">×</button></div>`).join('')||'<div style="color:#999">今天还没有添加日程。</div>';
  dailyNote.value=D.notes[k]||''; codeLog.value=D.code[cycleKey()]||'';
@@ -1009,9 +1032,49 @@ function saveSoc(){if(!sDate.value||!sTime.value)return alert('先填日期和�
 function renderSoc(){socRows.innerHTML=D.soc.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).map((r,i)=>`<tr><td>${r.date}</td><td>${r.time}</td><td>${esc(r.topic||'待定')}</td><td>${esc(r.note)}</td><td><button class="softbtn" onclick="D.soc.splice(${i},1);persist()">×</button></td></tr>`).join('')}
 function renderRoad(){roadmap.innerHTML=D.road.map((r,i)=>`<label><input type="checkbox" ${r[1]?'checked':''} onchange="D.road[${i}][1]=this.checked;persist()"> ${r[0]}</label>`).join('')}
 function saveCode(){D.code[cycleKey()]=codeLog.value;persist()}
+
+function moveApplicationDate(day,offset){const d=new Date(day+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+offset);return d.toISOString().slice(0,10)}
+function applicationReminders(){
+ return D.applicationMilestones.flatMap(m=>{
+  const exam=m.mode==='exam';
+  const steps=exam?[[-3,'考前三天','核对受验票、考场、交通和考试科目；整理近期错题。'],[-1,'考前一天','准备证件、文具与路线，确认出门和起床时间。'],[0,'考试当天','按受验票时间出发，带齐证件和文具。']]:
+  [[-3,'申请前三天','确认志望理由书：学部与专业、字数、签名及最终版本。'],[-2,'申请前两天','今天整理申请资料：原件、译文、指定表格、缴费与扫描备份。'],[-1,'申请前一天',m.mode==='online'?'设置明早 '+D.applicationWakeTime+' 完成线上提交的闹钟。':m.mode==='inperson'?'设置明早 '+D.applicationWakeTime+' 到校提交的闹钟；确认预约。':'设置明早 '+D.applicationWakeTime+' 起床去邮局的闹钟。']];
+  return steps.map(([offset,phase,action])=>({id:m.id+':'+offset,date:moveApplicationDate(m.date,offset),targetDate:m.date,title:m.title,note:m.note,mode:m.mode,phase,action,exam}));
+ }).sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title))
+}
+function updateApplicationWake(value){if(!/^\d\d:\d\d$/.test(value))return;D.applicationWakeTime=value;persist()}
+function downloadApplicationAlarm(id){
+ const item=applicationReminders().find(x=>x.id===id);if(!item)return;
+ const t=D.applicationWakeTime,day=item.targetDate.replaceAll('-',''),start=day+'T'+t.replace(':','')+'00';
+ const minutes=Number(t.slice(0,2))*60+Number(t.slice(3))+15,end=day+'T'+String(Math.floor(minutes/60)).padStart(2,'0')+String(minutes%60).padStart(2,'0')+'00';
+ const summary=item.mode==='online'?'提交线上申请':item.mode==='inperson'?'前往大学提交材料':'起床去邮局寄申请材料';
+ const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Study Garden//Reminder//ZH','BEGIN:VEVENT','UID:'+item.id.replace(/[^a-z0-9-]/gi,'-')+'@study-garden','DTSTART;TZID=Asia/Tokyo:'+start,'DTEND;TZID=Asia/Tokyo:'+end,'SUMMARY:'+summary,'DESCRIPTION:'+item.title+'。请确认大学要求及营业时间。','BEGIN:VALARM','TRIGGER:PT0M','ACTION:DISPLAY','DESCRIPTION:'+summary,'END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar;charset=utf-8'}));a.download='申请提醒-'+item.targetDate+'.ics';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
+}
+function renderApplicationReminder(){
+ const day=T(),items=applicationReminders(),today=items.filter(x=>x.date===day),upcoming=items.filter(x=>x.date>day).slice(0,8),box=document.getElementById('applicationReminder');
+ const card=x=>'<article class="reminderItem '+(x.exam?'exam':'')+'"><span class="phase">'+esc(x.phase)+' · '+esc(x.date)+' → '+esc(x.targetDate)+'</span><strong>'+esc(x.title)+'</strong><p class="action">'+esc(x.action)+'</p>'+(x.mode==='arrival'?'<div class="alert">必着：截止日必须送达。请提前寄出，不能等截止当天才去邮局。</div>':'')+'<small>'+esc(x.note||'')+'</small>'+(!x.exam&&x.phase==='申请前一天'?'<div class="reminderTools"><input type="time" aria-label="明早闹钟时间（日本时间）" value="'+esc(D.applicationWakeTime)+'" onchange="updateApplicationWake(this.value)"><button onclick="downloadApplicationAlarm('+JSON.stringify(x.id)+')">下载日历提醒</button></div><small>日本时间；请同时在手机闹钟中确认。</small>':'')+'</article>';
+ box.innerHTML='<div class="head"><div><h2>申请与考试提醒</h2><p>申请节点前 3 / 2 / 1 天，大学和 EJU 考前 3 / 1 天及当天。按日本日期显示。</p></div></div><div class="reminderTools"><a href="'+APPLICATION_WORKBENCH+'" target="_blank" rel="noopener noreferrer">打开申请季工作台 ↗</a><small>'+(D.applicationSyncedAt?'上次同步 '+esc(new Date(D.applicationSyncedAt).toLocaleString('zh-CN',{timeZone:'Asia/Tokyo'})):'内置申请时间线；到工作台点“同步到 Study Garden”可更新')+'</small></div><h3>今天 · '+esc(day)+'</h3><div class="reminderGrid">'+(today.length?today.map(card).join(''):'<p>今天没有申请或考试提醒。</p>')+'</div><h3>接下来</h3><div class="reminderGrid">'+upcoming.map(card).join('')+'</div>';
+}
+function importApplicationSync(){
+ const prefix='#application-sync=';if(!location.hash.startsWith(prefix))return;
+ try{
+  const raw=decodeURIComponent(location.hash.slice(prefix.length));
+  if(raw.length>60000)throw Error('too large');
+  const payload=JSON.parse(raw);
+  if(payload.version!==1||!Array.isArray(payload.milestones)||payload.milestones.length>120)throw Error('invalid');
+  const valid=payload.milestones.every(m=>m&&typeof m.id==='string'&&typeof m.title==='string'&&typeof m.date==='string'&&/^\d{4}-\d\d-\d\d$/.test(m.date)&&['post','arrival','online','inperson','exam'].includes(m.mode)&&m.title.length<160&&String(m.note||'').length<600);
+  if(!valid)throw Error('invalid milestone');
+  D.applicationMilestones=payload.milestones;D.applicationSyncedAt=payload.exportedAt||new Date().toISOString();
+  if(/^\d\d:\d\d$/.test(payload.wakeTime||''))D.applicationWakeTime=payload.wakeTime;
+  localStorage.setItem(KEY,JSON.stringify(D));
+  history.replaceState(null,'','#today');
+ }catch(e){history.replaceState(null,'','#today');alert('申请时间线同步失败，请回工作台重试。')}
+}
+
 function renderCal(){
  let y=cal.getFullYear(),m=cal.getMonth();monthName.textContent=`${y}年 ${m+1}月`;
- let make=id=>{let el=document.getElementById(id);el.innerHTML='';['一','二','三','四','五','六','日'].forEach(x=>el.innerHTML+=`<div class="dow">${x}</div>`);let f=new Date(y,m,1),off=(f.getDay()+6)%7,n=new Date(y,m+1,0).getDate();for(let i=0;i<off;i++)el.innerHTML+='<div></div>';for(let d=1;d<=n;d++){let k=fmt(new Date(y,m,d)),mark=D.soc.some(x=>x.date===k)||D.papers.some(x=>x.date===k);el.innerHTML+=`<div class="d ${k===T()?'today':''} ${mark?'mark':''}">${d}</div>`}};
+ let make=id=>{let el=document.getElementById(id);el.innerHTML='';['一','二','三','四','五','六','日'].forEach(x=>el.innerHTML+=`<div class="dow">${x}</div>`);let f=new Date(y,m,1),off=(f.getDay()+6)%7,n=new Date(y,m+1,0).getDate();for(let i=0;i<off;i++)el.innerHTML+='<div></div>';for(let d=1;d<=n;d++){let k=fmt(new Date(y,m,d)),mark=D.soc.some(x=>x.date===k)||D.papers.some(x=>x.date===k),appMark=applicationReminders().some(x=>x.date===k);el.innerHTML+=`<div class="d ${k===T()?'today':''} ${mark?'mark':''} ${appMark?'applicationMark':''}">${d}</div>`}};
  make('miniCal');make('bigCal')
 }
 function moveMonth(n){cal=new Date(cal.getFullYear(),cal.getMonth()+n,1);renderCal()}
@@ -1025,6 +1088,7 @@ function showView(id,fromHash=false){
  window.scrollTo(0,0);
 }
 document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>showView(b.dataset.view));
+importApplicationSync();
 if(location.hash)showView(decodeURIComponent(location.hash.slice(1)),true);
 window.addEventListener('hashchange',()=>showView(decodeURIComponent(location.hash.slice(1)),true));
 const GUESTBOOK_API='https://study-garden-messages.haihui04250612.chatgpt.site/api/messages';
