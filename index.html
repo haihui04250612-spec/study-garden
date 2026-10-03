@@ -114,6 +114,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
 .wereadActions a,.wereadActions button{border:0;background:#fff;border-radius:999px;padding:8px 12px;text-decoration:none;color:inherit;font-weight:700}
 .guestbook{border-top:1px solid var(--line);margin-top:19px;padding-top:17px}.guestbook h3{margin:0 0 5px;font-size:17px}.guestbook p{margin:0 0 13px;color:#6c7770;font-size:14px;line-height:1.6}.guestbook-form{display:grid;gap:9px}.guestbook-form label{font-size:14px;font-weight:650}.guestbook-form input,.guestbook-form textarea{display:block;margin-top:5px;font-size:16px}.guestbook-form .fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.guestbook-form button{justify-self:start}.guestbook-status{min-height:1.6em;margin:8px 0!important}.guestbook-list{display:grid;gap:9px;max-height:320px;overflow:auto}.guestbook-entry{padding:12px;border-radius:14px;background:#f7faf5;overflow-wrap:anywhere}.guestbook-entry strong{font-size:14px}.guestbook-entry time{font-size:12px;color:#6e786e;margin-left:8px}.guestbook-entry p{white-space:pre-wrap;color:var(--ink);font-size:15px;margin:7px 0 0}
 @media(max-width:450px){.guestbook-form .fields{grid-template-columns:1fr}}
+.ejuFocus #legacyCycle{display:none}.dailyLinks{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.dailyLinks a{padding:7px 11px;border:1px solid #e9c9c3;border-radius:999px;background:#fff;color:#70484d;text-decoration:none;font-weight:700;font-size:12px}.socDay{border:1px solid var(--line);border-radius:16px;margin:9px 0;background:#fff;overflow:hidden}.socDay[open]{border-color:#e8c9c3;background:#fff9f7}.socDay summary{cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;list-style:none}.socDay summary::-webkit-details-marker{display:none}.socDay .dayBody{padding:0 14px 14px}.socDay .dayMeta{font-size:12px;color:#896f6b}.socDay .dayCount{font-size:11px;color:#777;white-space:nowrap}.planWeekTitle{font-size:15px;margin:20px 3px 8px}.dayKinds{display:inline-block;min-width:42px;border-radius:999px;padding:2px 7px;margin-right:7px;background:#f4e8e6;color:#75484c;font-size:11px}.dayKinds.jp{background:#e4f3fb;color:#426e87}.dayKinds.rest{background:#e9f2e5;color:#55704c}.socStudy .check{display:flex}.socStudy .check input{flex:none}.dailyTip{font-size:12px;color:#7b7070;margin:8px 0}.todayDay{font-size:12px;color:#765c5e;font-weight:700}.socStudySpot .dailyLinks{margin:12px 0 3px}.socStudySpot .dailyLinks a{font-size:13px}
 </style>
 </head>
 <body>
@@ -145,7 +146,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
 </div>
 
 <section class="view active" id="today">
- <div class="socStudy socStudySpot" id="socStudyToday" aria-label="本周文综复习计划"></div>
+ <div class="socStudy socStudySpot" id="socStudyToday" aria-label="今日 EJU 学习计划"></div>
  <div class="summary">
   <div class="sum"><small>距离 EJU</small><b id="daysEju">-- 天</b></div>
   <div class="sum"><small>今日完成</small><b id="doneRate">0 / 0</b></div>
@@ -154,7 +155,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
  </div>
  <div class="layout">
   <div>
-   <div class="cycleHero">
+   <div id="legacyCycle"><div class="cycleHero">
     <div class="cycleTop"><div><div class="cycleTitle" id="cycleTitle">5日学习包</div><div class="cycleMeta" id="cycleDates"></div></div><div class="pill" id="cycleRemain">剩余 -- 天</div></div>
     <div class="cyclebar"><i id="cycleBar"></i></div><div class="cycleMeta" id="cycleProgress"></div>
     <div class="cycleActions"><button class="softbtn" onclick="extendCycle()">＋ 延长 2 天</button><button class="softbtn" onclick="nextCycle()">提前开始下一周期</button><button class="softbtn" onclick="addCycleTask()">＋ 自定义周期任务</button></div>
@@ -163,11 +164,12 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
     <div class="packCard jpPack"><h2>▤ EJU 日本語</h2><div class="phase" id="ejuPhase"></div><div id="cycleJp"></div></div>
     <div class="packCard codePack"><h2>⌨ Programming</h2><div class="phase" id="codePhase">Python · 实践优先</div><div id="cycleCode"></div></div>
    </div>
+   </div>
    <div class="card" style="margin-top:14px">
     <div class="head"><h2>◎ 文综 & 今日临时任务</h2><button class="softbtn" onclick="showView('socV')">＋ 添加一对一</button></div>
     <div id="socTasks"></div>
     <div id="otherTasks"></div>
-    <div class="small" style="margin-top:8px">一对一课程仍在约好后加入对应日期；下面的自习目标可在本周任意一天完成。</div>
+    <div class="small" style="margin-top:8px">一对一约好后可加入当天。每日主计划在页面顶部；这里保留临时任务。</div>
    </div>
    <div class="card" style="margin-top:14px">
     <div class="head"><h2>◷ 今日日程</h2><button class="softbtn" onclick="addSchedule()">＋ 添加</button></div>
@@ -223,8 +225,8 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
 
 <section class="view" id="socV">
  <div class="layout"><div>
- <div class="card"><div class="head"><h2>EJU 文综 · 复习安排</h2><a class="softbtn" style="text-decoration:none;color:inherit" href="https://eju-study-room.haihui04250612.chatgpt.site/#today" target="_blank" rel="noopener noreferrer">打开文综研习室 ↗</a></div>
-  <p>按现在的进度：经济已经学过，政治学过一部分。先守住会做的，再用主干和真题速览其余范围。每周任务是可拆开的方向，不要求把研习室所有笔记逐页学完。</p>
+ <div class="card"><div class="head"><h2>EJU · 考前逐日计划</h2><a class="softbtn" style="text-decoration:none;color:inherit" href="https://eju-study-room.haihui04250612.chatgpt.site/#today" target="_blank" rel="noopener noreferrer">打开文综研习室 ↗</a></div>
+  <p>10/5–11/7 按周一、二、四、六文综，周三、五日语，周日修整；11/8 是考试日。经济先守分、政治补主干，史地社用研习室 18 课速通，再以真题决定补缺。每天的勾选只记录计划；研习室课程进度独立保存。</p>
   <div id="socStudyWeeks"></div>
  </div>
  <div class="card" style="margin-top:14px"><h2>一对一课程</h2><p style="color:var(--muted)">不设置固定上课日。每次和老师约好下一次时间后，再添加到对应日期。</p>
@@ -319,51 +321,535 @@ const KEY='studyGardenV2';
 const base={tasks:{},schedules:{},papers:[],soc:[],cycles:[],cycleOffset:0,cycleExtend:0,road:[['Python 基础',false],['Python 小项目',false],['HTML / CSS',false],['JavaScript 基础',false],['Git / GitHub',false],['AI 辅助综合项目',false]],notes:{},code:{}};
 let D=JSON.parse(localStorage.getItem(KEY)||'null')||structuredClone(base);
 if(!D.books)D.books=[];if(!D.readingNotes)D.readingNotes=[];
-if(!D.socStudyPlan2)D.socStudyPlan2={};
+if(!D.dailyEju)D.dailyEju={};
 const fmt=d=>{let x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
 const T=()=>fmt(new Date()), ejuDate=new Date('2026-11-08T00:00:00'); let cal=new Date();
 const SOC_ROOM='https://eju-study-room.haihui04250612.chatgpt.site/';
 // Study Garden saves only the plan checkmarks. Notes, cards, and review records remain in the private study room.
-const socPlans=[
- {start:'2026-09-27',end:'2026-10-03',title:'摸清起点 · 守住经济',tasks:['已学经济只做回忆与少量真题，忘了的再回研习室看对应笔记','把政治分成「已学 / 没学」，优先挑日本宪法、人权、国会与内阁','做一小组混合真题，记下完全陌生的领域，不急着学完']},
- {start:'2026-10-04',end:'2026-10-10',title:'政治主干 · 先会判断',tasks:['速过民主政治、日本宪法与人权：每组记住核心原则和一个例子','速过国会、内阁、选举与国际政治：抓机关关系和关键词','做政治相关真题；错题只查对应知识点，已学经济继续少量回忆']},
- {start:'2026-10-11',end:'2026-10-17',title:'地理速览 · 看图抓线索',tasks:['按 2026 考纲速览地图与时差、气候、人口、资源和产业','做地理题，碰到陌生概念只补一条能辨认选项的线索','把世界史先画成「革命与工业化→两次世界大战→冷战→冷战后」的时间线']},
- {start:'2026-10-18',end:'2026-10-23',title:'历史与社会 · 保留主干',tasks:['沿时间线速过近代化、两次世界大战、冷战及其后，每段抓起因与结果','社会与经济补缺：环境、劳动、消费者、社会保障、贸易，各记一两个辨认点','做一组混合真题；只补重复出错或一看就不会的基础概念']},
- {start:'2026-10-24',end:'2026-10-30',title:'真题回收 · 找能拿的分',tasks:['做 1 套文综 80 分钟计时真题，记录没做完与看错题干的地方','把错题分成「没学过 / 记混了 / 来不及」，先补重复出现的基础点','在研习室复习已确认的闪卡和对应笔记；有余力再做第二套']},
- {start:'2026-10-31',end:'2026-11-06',title:'考前巩固 · 少而准',tasks:['做 1 套文综 80 分钟计时真题，练遇到陌生题及时往下做','只重做重复错题，复习经济与政治已会的主干','整理一张考前短清单；有余力再做一套，不追求学完所有笔记']},
- {start:'2026-11-07',end:'2026-11-07',title:'考前一天 · 轻量回顾',tasks:['只看短清单与反复错题，不再开新整卷','检查考试用品与路线，留出休息时间']}
+const dailyPlan=[
+ {
+  "date": "2026-10-04",
+  "type": "rest",
+  "title": "先整理节奏，今天休息",
+  "minutes": 0,
+  "links": [],
+  "tasks": []
+ },
+ {
+  "date": "2026-10-05",
+  "type": "soc",
+  "title": "政治主干① 国家与民主",
+  "minutes": 100,
+  "links": [
+   "topic:democracy"
+  ],
+  "tasks": [
+   "用研习室「国家与民主政治」画出主权、法治、权力分立三格，口头讲 3 分钟。",
+   "做该组关联原题 4–6 题；错因只记一行，不追着补整章。",
+   "把 2 个容易混淆点做成待确认笔记或闪卡。"
+  ]
+ },
+ {
+  "date": "2026-10-06",
+  "type": "soc",
+  "title": "政治主干② 宪法与权利",
+  "minutes": 105,
+  "links": [
+   "topic:japan-constitution",
+   "topic:rights"
+  ],
+  "tasks": [
+   "对照明治宪法与现行宪法：主权、天皇、三大原则；再按自由权/社会权/参政权举例。",
+   "做政治关联题 5–8 题，错题回到相应知识点，不逐页重读。",
+   "合上笔记复述 5 分钟，标记仍不清楚的权利类型。"
+  ]
+ },
+ {
+  "date": "2026-10-07",
+  "type": "jp",
+  "title": "日语摸底 · 定位最弱环节",
+  "minutes": 110,
+  "links": [],
+  "tasks": [
+   "限时做一组读解（约 35 分钟），记录题型、耗时和定位失误。",
+   "做一组听解/听读解（约 35 分钟），听后核对错误原因。",
+   "写一篇记述（约 25 分钟）；只挑最影响分数的 3 个问题。"
+  ]
+ },
+ {
+  "date": "2026-10-08",
+  "type": "soc",
+  "title": "政治主干③ 国会、内阁与选举",
+  "minutes": 105,
+  "links": [
+   "topic:japan-government",
+   "topic:uk-us-government"
+  ],
+  "tasks": [
+   "画「国会立法—内阁执行—司法审查」关系图；比较议会内阁制与总统制。",
+   "做制度题 6–8 题，专查两院差异、首相指名与内阁责任。",
+   "用 5 分钟复述 10/5–10/6 的三大原则，不会的再看。"
+  ]
+ },
+ {
+  "date": "2026-10-09",
+  "type": "jp",
+  "title": "读听错因回收",
+  "minutes": 100,
+  "links": [],
+  "tasks": [
+   "重做 10/7 的错题：先独立答，再标出题干线索。",
+   "精听一段错误最多的音频 2 遍，对照文本记录转折、数字或态度。",
+   "整理 8–12 个高频表达，写出一条下次要遵守的做题规则。"
+  ]
+ },
+ {
+  "date": "2026-10-10",
+  "type": "soc",
+  "title": "经济守分 + 第一周小测",
+  "minutes": 110,
+  "links": [
+   "topic:markets",
+   "topic:macro",
+   "topic:fiscal"
+  ],
+  "tasks": [
+   "已学经济只抽查供需、GDP/景气、财政三组，分别用一句话解释，不重学整章。",
+   "做一组政治+经济混合题 12–15 题（约 35 分钟），记录正确数与题型。",
+   "把本周反复错的 3 点放入研习室闪卡；下周只回看这 3 点。"
+  ]
+ },
+ {
+  "date": "2026-10-11",
+  "type": "rest",
+  "title": "修整日",
+  "minutes": 0,
+  "links": [],
+  "tasks": []
+ },
+ {
+  "date": "2026-10-12",
+  "type": "soc",
+  "title": "地理 G1/G2 · 地图与地形",
+  "minutes": 100,
+  "links": [
+   "lesson:sprint-g1",
+   "lesson:sprint-g2"
+  ],
+  "tasks": [
+   "各用约 25 分钟完成 G1 经纬度/时差、G2 地形与灾害主线。",
+   "做两课关联原题各 1–2 题，错在地图定位就回到地图。",
+   "不看课页讲出时差算法和板块边界的一条规律。"
+  ]
+ },
+ {
+  "date": "2026-10-13",
+  "type": "soc",
+  "title": "地理 G3 · 气候图",
+  "minutes": 90,
+  "links": [
+   "lesson:sprint-g3"
+  ],
+  "tasks": [
+   "完成 G3：先看气温年变化，再看降水季节，最后推气候类型。",
+   "限时做 5–6 道气候/自然地理题，圈出图表单位和半球线索。",
+   "整理 3 组容易混淆的气候特征。"
+  ]
+ },
+ {
+  "date": "2026-10-14",
+  "type": "jp",
+  "title": "读解限时与证据定位",
+  "minutes": 105,
+  "links": [],
+  "tasks": [
+   "限时做读解一大组，按设问标记原文证据，不边做边查词。",
+   "逐题复盘：为什么正确项成立、干扰项错在哪里。",
+   "记述 1 篇，检查立场、理由、例子是否齐全。"
+  ]
+ },
+ {
+  "date": "2026-10-15",
+  "type": "soc",
+  "title": "地理 G4/G5 · 产业与人口",
+  "minutes": 100,
+  "links": [
+   "lesson:sprint-g4",
+   "lesson:sprint-g5"
+  ],
+  "tasks": [
+   "完成 G4 农业资源工业与 G5 人口城市，各抓一条「条件→活动→结果」。",
+   "做地图/统计图相关原题 6–8 题，先读图例和年份。",
+   "把 2 道错题解释给自己听，不额外背旧年份的排名。"
+  ]
+ },
+ {
+  "date": "2026-10-16",
+  "type": "jp",
+  "title": "听解与听读解专项",
+  "minutes": 105,
+  "links": [],
+  "tasks": [
+   "做一整组听解/听读解，先听一遍作答，严格不暂停。",
+   "核对后只精听错的 3–4 段：定位话题、转折和结论。",
+   "重写上次记述的开头与结尾各一次，保持短而清楚。"
+  ]
+ },
+ {
+  "date": "2026-10-17",
+  "type": "soc",
+  "title": "地理 G6 · 区域串联",
+  "minutes": 100,
+  "links": [
+   "lesson:sprint-g6",
+   "lesson:sprint-g3"
+  ],
+  "tasks": [
+   "完成 G6，用世界区域把气候、资源、产业和人口连成一张地图。",
+   "做地理混合题 10–12 题（约 30 分钟），统计读图失误和知识空白。",
+   "只补重复错的 2 个地理点，回看 G3 的气候判读。"
+  ]
+ },
+ {
+  "date": "2026-10-18",
+  "type": "rest",
+  "title": "修整日",
+  "minutes": 0,
+  "links": [],
+  "tasks": []
+ },
+ {
+  "date": "2026-10-19",
+  "type": "soc",
+  "title": "历史 H1/H2 · 革命与民族国家",
+  "minutes": 105,
+  "links": [
+   "lesson:sprint-h1",
+   "lesson:sprint-h2"
+  ],
+  "tasks": [
+   "完成 H1/H2：把产业革命、1776、1789、维也纳体制、意德统一排成因果线。",
+   "做两课关联原题各 1–2 题，区分生产变化与政治革命。",
+   "合上课页复述时间线，不背细枝末节。"
+  ]
+ },
+ {
+  "date": "2026-10-20",
+  "type": "soc",
+  "title": "历史 H3/H4 · 帝国主义到一战",
+  "minutes": 105,
+  "links": [
+   "lesson:sprint-h3",
+   "lesson:sprint-h4"
+  ],
+  "tasks": [
+   "完成 H3/H4：用殖民地图、明治维新、一战及战后秩序串线。",
+   "做关联题 5–7 题；殖民归属题先确认年代。",
+   "用 5 分钟讲清一战背景、导火线与战后制度的区别。"
+  ]
+ },
+ {
+  "date": "2026-10-21",
+  "type": "jp",
+  "title": "日语整套模拟①",
+  "minutes": 145,
+  "links": [],
+  "tasks": [
+   "按考试顺序完成一套日语真题，读解、听解/听读解与记述连续计时。",
+   "只做第一轮标记：读解耗时、听解失分点、记述是否写完。",
+   "保存真题记录；详细复盘留到 10/23。"
+  ]
+ },
+ {
+  "date": "2026-10-22",
+  "type": "soc",
+  "title": "历史 H5/H6 · 二战与冷战",
+  "minutes": 105,
+  "links": [
+   "lesson:sprint-h5",
+   "lesson:sprint-h6"
+  ],
+  "tasks": [
+   "完成 H5/H6：经济危机、二战、冷战、去殖民化、日本复兴各抓一因一果。",
+   "做两课关联题 5–7 题，错题按年份与制度分类。",
+   "对照 1930s、1945、1951/52、1973 的关键转折。"
+  ]
+ },
+ {
+  "date": "2026-10-23",
+  "type": "jp",
+  "title": "整套①深度复盘",
+  "minutes": 110,
+  "links": [],
+  "tasks": [
+   "重做整套①中读解错题，给每道题找到原文证据。",
+   "精听错的 3–5 段并看文本，分辨「没听见」与「听见但误判」。",
+   "修改记述，整理一张下次模拟要执行的 5 条规则。"
+  ]
+ },
+ {
+  "date": "2026-10-24",
+  "type": "soc",
+  "title": "历史 H7 · 冷战后与整线回想",
+  "minutes": 100,
+  "links": [
+   "lesson:sprint-h7",
+   "lesson:sprint-h6"
+  ],
+  "tasks": [
+   "完成 H7，区分 EU、欧元区、申根区，并排出冷战结束三锚点。",
+   "做历史混合题 10–12 题；不会的优先回到 H1–H7 主线。",
+   "画一条从产业革命到冷战后的 8 节点时间线。"
+  ]
+ },
+ {
+  "date": "2026-10-25",
+  "type": "rest",
+  "title": "修整日",
+  "minutes": 0,
+  "links": [],
+  "tasks": []
+ },
+ {
+  "date": "2026-10-26",
+  "type": "soc",
+  "title": "社会 S1/S2 · 环境与契约",
+  "minutes": 100,
+  "links": [
+   "lesson:sprint-s1",
+   "lesson:sprint-s2"
+  ],
+  "tasks": [
+   "完成 S1 环境能源、S2 契约消费者，重点理解谁承担成本、谁受法律保护。",
+   "做两课关联原题各 1–2 题，用生活场景解释答案。",
+   "将外部性、可持续发展、消费者保护各写一句辨别提示。"
+  ]
+ },
+ {
+  "date": "2026-10-27",
+  "type": "soc",
+  "title": "社会 S3/S4 · 劳动、信息",
+  "minutes": 100,
+  "links": [
+   "lesson:sprint-s3",
+   "lesson:sprint-s4"
+  ],
+  "tasks": [
+   "完成 S3 劳动社会保障、S4 信息科技伦理，各抓制度目的。",
+   "做关联题 5–7 题，记录「权利/制度/对象」是否混淆。",
+   "合上页面说出 2 个生活情境分别该找什么制度。"
+  ]
+ },
+ {
+  "date": "2026-10-28",
+  "type": "jp",
+  "title": "日语整套模拟②",
+  "minutes": 145,
+  "links": [],
+  "tasks": [
+   "换一套真题，按考试顺序连续计时完成读解、听解/听读解、记述。",
+   "与整套①对比：完成度、读解时间、听解错误类型。",
+   "保存成绩与薄弱点，暂不展开大量新词。"
+  ]
+ },
+ {
+  "date": "2026-10-29",
+  "type": "soc",
+  "title": "社会 S5 + 政治回收",
+  "minutes": 105,
+  "links": [
+   "lesson:sprint-s5",
+   "topic:japan-government",
+   "topic:security"
+  ],
+  "tasks": [
+   "完成 S5 国际社会与和平，和日本政治的国会、安保主题连起来。",
+   "做政治/社会混合题 10–12 题，先处理反复错的制度题。",
+   "把史地社 18 课中「需回看」的课列成短名单，最多 4 课。"
+  ]
+ },
+ {
+  "date": "2026-10-30",
+  "type": "jp",
+  "title": "整套②复盘与弱项专项",
+  "minutes": 110,
+  "links": [],
+  "tasks": [
+   "复盘整套②：读解错题找证据，听解错段精听。",
+   "针对最弱题型限时做一小组，应用上一套总结的规则。",
+   "记述再写一篇，核对结构与时间；只保留 5 条高频提醒。"
+  ]
+ },
+ {
+  "date": "2026-10-31",
+  "type": "soc",
+  "title": "文综整卷模拟①",
+  "minutes": 125,
+  "links": [
+   "exam"
+  ],
+  "tasks": [
+   "选研习室未做过的一套文综原题，80 分钟完整计时，中途不查资料。",
+   "用约 30 分钟分类错题：知识缺口、看错图表、时间不够、粗心。",
+   "把最影响分数的 3 个缺口对应到课程/主题，不立刻深挖。"
+  ]
+ },
+ {
+  "date": "2026-11-01",
+  "type": "rest",
+  "title": "修整日",
+  "minutes": 0,
+  "links": [],
+  "tasks": []
+ },
+ {
+  "date": "2026-11-02",
+  "type": "soc",
+  "title": "模拟①复盘 · 只补高频缺口",
+  "minutes": 105,
+  "links": [
+   "exam",
+   "mode:cards"
+  ],
+  "tasks": [
+   "独立重做模拟①错题 8–12 题，确认是真不会还是时间问题。",
+   "回到对应课程/经济政治主题，只补重复出现的 2–3 个基础点。",
+   "复习研习室到期闪卡，整理一页「下次整卷要注意」。"
+  ]
+ },
+ {
+  "date": "2026-11-03",
+  "type": "soc",
+  "title": "文综整卷模拟②",
+  "minutes": 125,
+  "links": [
+   "exam"
+  ],
+  "tasks": [
+   "换一套未做原题，80 分钟计时；陌生题先标记后往下做。",
+   "核对后统计：完成题数、三类错因及与模拟①相比的变化。",
+   "只把反复错的 3 点列入最后回看清单。"
+  ]
+ },
+ {
+  "date": "2026-11-04",
+  "type": "jp",
+  "title": "日语整套模拟③",
+  "minutes": 145,
+  "links": [],
+  "tasks": [
+   "用一套未做真题完成最后一次连续计时模拟。",
+   "对比前两套，确认读解节奏、听解预读和记述收尾是否稳定。",
+   "错题只选最有代表性的 5–8 题复盘，避免熬夜。"
+  ]
+ },
+ {
+  "date": "2026-11-05",
+  "type": "soc",
+  "title": "文综最后回收",
+  "minutes": 100,
+  "links": [
+   "exam",
+   "mode:cards"
+  ],
+  "tasks": [
+   "重做模拟②错题，再回看反复失分的史地社课（最多 4 课）。",
+   "经济供需/GDP/财政与政治宪法/国会各用 5 分钟闭眼回想。",
+   "整理一张考前短清单：年代线、地图判读、制度区别、易错词。"
+  ]
+ },
+ {
+  "date": "2026-11-06",
+  "type": "jp",
+  "title": "日语错题收束",
+  "minutes": 95,
+  "links": [],
+  "tasks": [
+   "重做模拟③反复错的读解题和 2–3 段听解，确认旧错误不再出现。",
+   "限时写一篇记述，检查题意、结构与收尾。",
+   "收起新资料，只看自己的高频词/语法及 5 条做题提醒。"
+  ]
+ },
+ {
+  "date": "2026-11-07",
+  "type": "soc",
+  "title": "考前一天 · 轻量回顾",
+  "minutes": 50,
+  "links": [
+   "mode:cards"
+  ],
+  "tasks": [
+   "看文综短清单和 5–8 道代表性旧错题；不再开新整卷。",
+   "用 10 分钟默想日语读解节奏、听解预读和记述结构。",
+   "核对受验票、证件、文具、会场路线与出发时间；早点休息。"
+  ]
+ },
+ {
+  "date": "2026-11-08",
+  "type": "exam",
+  "title": "EJU 考试日",
+  "minutes": 0,
+  "links": [],
+  "tasks": []
+ }
 ];
 function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function persist(){localStorage.setItem(KEY,JSON.stringify(D));render()}
 function seed(k){
  if(!D.tasks[k])D.tasks[k]=[];
  if(!D.schedules[k])D.schedules[k]=[];
- if(!D.tasks[k].some(x=>x.auto==='jp'))D.tasks[k].push({cat:'EJU 日本語',text:'按本周真题计划推进 / 或复盘错题',done:false,auto:'jp'});
- if(!D.tasks[k].some(x=>x.auto==='code'))D.tasks[k].push({cat:'Programming',text:'最低任务：学习或实践 20 分钟',done:false,auto:'code'});
+ if(k>'2026-11-08'&&!D.tasks[k].some(x=>x.auto==='jp'))D.tasks[k].push({cat:'EJU 日本語',text:'按本周真题计划推进 / 或复盘错题',done:false,auto:'jp'});
+ if(k>'2026-11-08'&&!D.tasks[k].some(x=>x.auto==='code'))D.tasks[k].push({cat:'Programming',text:'最低任务：学习或实践 20 分钟',done:false,auto:'code'});
 }
 function taskHTML(cat,id){
  let k=T();seed(k);return D.tasks[k].map((x,i)=>[x,i]).filter(([x])=>x.cat===cat).map(([x,i])=>`<label class="check ${x.done?'done':''}"><input type="checkbox" ${x.done?'checked':''} onchange="D.tasks['${k}'][${i}].done=this.checked;persist()"><span>${esc(x.text)}</span></label>`).join('')||'<div style="color:#888;font-size:12px">今天没有安排。</div>'
 }
-function toggleSocStudy(start,index){
- const plan=socPlans.find(p=>p.start===start);if(!plan||index<0||index>=plan.tasks.length)return;
- if(!D.socStudyPlan2||typeof D.socStudyPlan2!=='object'||Array.isArray(D.socStudyPlan2))D.socStudyPlan2={};
- if(!Array.isArray(D.socStudyPlan2[start]))D.socStudyPlan2[start]=[];
- D.socStudyPlan2[start][index]=!D.socStudyPlan2[start][index];persist();
+function dailyUrl(key){
+ if(key==='exam')return SOC_ROOM+'#exams';
+ if(key==='mode:cards')return SOC_ROOM+'?mode=cards#today';
+ if(key.startsWith('lesson:'))return SOC_ROOM+'?lesson='+encodeURIComponent(key.slice(7))+'#today';
+ if(key.startsWith('topic:'))return SOC_ROOM+'?topic='+encodeURIComponent(key.slice(6))+'#today';
+ return SOC_ROOM+'?mode=sprint#today';
+}
+function dailyLabel(key){
+ if(key==='exam')return '打开历年真题';
+ if(key==='mode:cards')return '复习闪卡';
+ if(key.startsWith('lesson:'))return '课程 '+key.slice(14).toUpperCase();
+ if(key.startsWith('topic:')){const names={'democracy':'国家与民主','japan-constitution':'日本宪法','rights':'基本人权','japan-government':'国会与内阁','uk-us-government':'英美制度','markets':'供需与市场','macro':'景气与国民所得','fiscal':'财政与税收','security':'和平与安保'};return '主题 · '+(names[key.slice(6)]||key.slice(6));}
+ return '打开研习室';
+}
+function dailyLinks(p){
+ if(p.type==='jp')return '<div class="dailyLinks"><a href="#eju" onclick="showView(\'eju\');return false">日语真题记录</a><a href="https://eju-focus-practice.haihui04250612.chatgpt.site/" target="_blank" rel="noopener noreferrer">针对练习 ↗</a></div>';
+ return '<div class="dailyLinks">'+(p.links.length?p.links:['mode:sprint']).map(key=>'<a href="'+esc(dailyUrl(key))+'" target="_blank" rel="noopener noreferrer">'+esc(dailyLabel(key))+' ↗</a>').join('')+'</div>';
+}
+function dailyRows(p){
+ return p.tasks.map((task,i)=>{const checked=!!D.dailyEju?.[p.date]?.[i];return '<label class="check '+(checked?'done':'')+'"><input type="checkbox" data-date="'+p.date+'" data-index="'+i+'" '+(checked?'checked':'')+' onchange="toggleDaily(this.dataset.date,Number(this.dataset.index))"><span>'+esc(task)+'</span></label>'}).join('');
+}
+function toggleDaily(date,index){
+ const p=dailyPlan.find(x=>x.date===date);if(!p||index<0||index>=p.tasks.length)return;
+ const open=[...document.querySelectorAll('.socDay[open]')].map(x=>x.id);
+ if(!D.dailyEju||typeof D.dailyEju!=='object')D.dailyEju={};
+ if(!Array.isArray(D.dailyEju[date]))D.dailyEju[date]=[];
+ D.dailyEju[date][index]=!D.dailyEju[date][index];
+ localStorage.setItem(KEY,JSON.stringify(D));render();
+ open.forEach(id=>{const el=document.getElementById(id);if(el)el.open=true});
 }
 function renderSocStudy(){
- const today=T(),plan=socPlans.find(p=>p.start<=today&&today<=p.end);
- const room=`<a href="${SOC_ROOM}#today" target="_blank" rel="noopener noreferrer">去研习室复习 ↗</a>`;
- const checkRows=p=>p.tasks.map((task,i)=>{const checked=!!D.socStudyPlan2?.[p.start]?.[i];return `<label class="check ${checked?'done':''}"><input type="checkbox" ${checked?'checked':''} onchange="toggleSocStudy('${p.start}',${i})"><span>${esc(task)}</span></label>`}).join('');
- if(plan){
-  const count=plan.tasks.filter((_,i)=>D.socStudyPlan2?.[plan.start]?.[i]).length;
-  socStudyToday.innerHTML=`<div class="weekLabel">本周 · ${plan.start.slice(5)}—${plan.end.slice(5)}</div><h3>${esc(plan.title)}</h3><p>不规定哪天完成；进入研习室后，从本周主题开始。${room}</p>${checkRows(plan)}<div class="weekProgress">本周 ${count} / ${plan.tasks.length} 项已完成 · <a href="#" onclick="showView('socV');return false">看完整安排</a></div>`;
+ const today=T(),p=dailyPlan.find(x=>x.date===today);
+ if(p){
+  const count=p.tasks.filter((_,i)=>D.dailyEju?.[p.date]?.[i]).length;
+  const caption=p.type==='soc'?'文综':p.type==='jp'?'日语':p.type==='rest'?'修整':'考试';
+  socStudyToday.innerHTML='<div class="todayDay">'+p.date.slice(5)+' · '+caption+(p.minutes?' · 约 '+p.minutes+' 分钟':'')+'</div><h3>'+esc(p.title)+'</h3>'+(p.type==='rest'?'<p>今天无必做学习任务。散步、睡眠与整理生活即可；不用补昨天的进度。</p>':p.type==='exam'?'<p>按准考证和会场安排出发，考试结束后好好休息。</p>':'<p>按顺序完成下面三步；时间紧时至少完成第一步，不把未完成任务自动滚到修整日。</p>'+dailyRows(p)+dailyLinks(p))+'<div class="weekProgress">'+(p.tasks.length?'今日 '+count+' / '+p.tasks.length+' 项已完成 · ':'')+'<a href="#" onclick="showView(\'socV\');return false">看全部逐日安排</a></div>';
  }else{
-  socStudyToday.innerHTML=today>'2026-11-07'?`<h3>11/8 · EJU 本番</h3><p>今天按自己的节奏来。${room}</p>`:`<h3>文综复习</h3><p>复习安排从 9/27 开始。${room}</p>`;
+  socStudyToday.innerHTML='<h3>考前计划已结束</h3><p>查看复习记录或去研习室继续整理。<a href="'+SOC_ROOM+'" target="_blank" rel="noopener noreferrer">打开研习室 ↗</a></p>';
  }
- socStudyWeeks.innerHTML=socPlans.map(p=>{
-  const count=p.tasks.filter((_,i)=>D.socStudyPlan2?.[p.start]?.[i]).length;
-  return `<section class="socWeek ${p===plan?'current':''}"><h3>${p.start.slice(5)}—${p.end.slice(5)} · ${esc(p.title)}</h3>${checkRows(p)}<small>${count} / ${p.tasks.length} 项已完成</small></section>`
- }).join('')+`<p class="small">研习室里已有经济、政治的主题整理；地理、历史和社会先依照 <a href="https://www.jasso.go.jp/ryugaku/eju/examinee/syllabus/japan_theworld.html" target="_blank" rel="noopener noreferrer">2026 年官方考纲 ↗</a> 与真题补缺。这里的勾选只记录本周安排，研习室内的闪卡和校准进度不会自动同步。</p>`;
+ const weeks={'2026-10-04':'10/4 · 起步','2026-10-05':'10/5–10/11 · 政治与经济','2026-10-12':'10/12–10/18 · 地理','2026-10-19':'10/19–10/25 · 历史','2026-10-26':'10/26–11/1 · 社会与模拟','2026-11-02':'11/2–11/8 · 考前收束'};
+ socStudyWeeks.innerHTML=dailyPlan.map(day=>{
+  const count=day.tasks.filter((_,i)=>D.dailyEju?.[day.date]?.[i]).length;
+  const kind=day.type==='soc'?'文综':day.type==='jp'?'日语':day.type==='rest'?'修整':'考试';
+  const prefix=weeks[day.date]?'<h3 class="planWeekTitle">'+weeks[day.date]+'</h3>':'';
+  return prefix+'<details class="socDay" id="day-'+day.date+'" '+(day.date===today?'open':'')+'><summary><span><span class="dayKinds '+day.type+'">'+kind+'</span>'+day.date.slice(5)+' · '+esc(day.title)+'</span><span class="dayCount">'+(day.tasks.length?count+' / '+day.tasks.length:'')+'</span></summary><div class="dayBody">'+(day.minutes?'<p class="dayMeta">建议约 '+day.minutes+' 分钟 · 按步骤完成</p>':'<p class="dayMeta">'+(day.type==='rest'?'无必做任务。': '考试当天按会场安排。')+'</p>')+dailyRows(day)+(day.tasks.length?dailyLinks(day):'')+'</div></details>';
+ }).join('')+'<p class="dailyTip">勾选保存在当前浏览器；研习室的课程、笔记与闪卡有独立进度。若某天没完成，优先做下一次的第一步，重复错题留到复盘日。每天的用时是建议，可随学校与课程时间调整。</p>';
 }
 
 function cycleInfo(){
@@ -511,8 +997,8 @@ function updateClock(){
 function render(){
  let now=new Date();shownDate=fmt(now);dateTitle.textContent=now.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
  let dd=Math.max(0,Math.ceil((ejuDate-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000));daysEju.textContent=dd+' 天';countdown.textContent='EJU · '+dd+' 天';
- let k=T();seed(k);socTasks.innerHTML=taskHTML('EJU 文综');otherTasks.innerHTML=D.tasks[k].filter(x=>!['EJU 日本語','EJU 文综','Programming'].includes(x.cat)).map((x,i)=>`<label class="check ${x.done?'done':''}"><input type="checkbox" ${x.done?'checked':''} onchange="xDone('${k}',${i})"><span>${esc(x.cat)} · ${esc(x.text)}</span></label>`).join('');renderCycle();renderSocStudy();
- let all=D.tasks[k],dn=all.filter(x=>x.done).length;doneRate.textContent=dn+' / '+all.length;paperCount.textContent=D.papers.length+' 套';roadCount.textContent=D.road.filter(x=>x[1]).length+' / 6';
+ let k=T();document.body.classList.toggle('ejuFocus',k<='2026-11-08');seed(k);socTasks.innerHTML=taskHTML('EJU 文综');otherTasks.innerHTML=D.tasks[k].filter(x=>!['EJU 日本語','EJU 文综','Programming'].includes(x.cat)).map((x,i)=>`<label class="check ${x.done?'done':''}"><input type="checkbox" ${x.done?'checked':''} onchange="xDone('${k}',${i})"><span>${esc(x.cat)} · ${esc(x.text)}</span></label>`).join('');renderCycle();renderSocStudy();
+ let plan=dailyPlan.find(x=>x.date===k), all=plan?.tasks||[],dn=all.filter((_,i)=>D.dailyEju?.[k]?.[i]).length;doneRate.textContent=dn+' / '+all.length;paperCount.textContent=D.papers.length+' 套';roadCount.textContent=D.road.filter(x=>x[1]).length+' / 6';
  timeline.innerHTML=(D.schedules[k]||[]).sort((a,b)=>a.time.localeCompare(b.time)).map((x,i)=>`<div class="slot"><time>${x.time}</time><span class="dot"></span><span>${esc(x.text)}</span><button class="softbtn" onclick="D.schedules['${k}'].splice(${i},1);persist()">×</button></div>`).join('')||'<div style="color:#999">今天还没有添加日程。</div>';
  dailyNote.value=D.notes[k]||''; codeLog.value=D.code[cycleKey()]||'';
  renderSoc();renderPapers();renderRoad();renderCal();renderEvents();renderStats();renderReading();
