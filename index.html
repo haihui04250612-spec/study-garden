@@ -1038,7 +1038,7 @@ function applicationReminders(){
  return D.applicationMilestones.flatMap(m=>{
   const exam=m.mode==='exam';
   const steps=exam?[[-3,'考前三天','核对受验票、考场、交通和考试科目；整理近期错题。'],[-1,'考前一天','准备证件、文具与路线，确认出门和起床时间。'],[0,'考试当天','按受验票时间出发，带齐证件和文具。']]:
-  [[-3,'申请前三天','确认志望理由书：学部与专业、字数、签名及最终版本。'],[-2,'申请前两天','今天整理申请资料：原件、译文、指定表格、缴费与扫描备份。'],[-1,'申请前一天',m.mode==='online'?'设置明早 '+D.applicationWakeTime+' 完成线上提交的闹钟。':m.mode==='inperson'?'设置明早 '+D.applicationWakeTime+' 到校提交的闹钟；确认预约。':'设置明早 '+D.applicationWakeTime+' 起床去邮局的闹钟。']];
+  [[-3,'申请前三天',m.mode==='arrival'?'确认志望理由书并尽快寄件；截止日必着，请预留实际送达时间。':'确认志望理由书：学部与专业、字数、签名及最终版本。'],[-2,'申请前两天','今天整理申请资料：原件、译文、指定表格、缴费与扫描备份。'],[-1,'申请前一天',m.mode==='online'?'设置明早 '+D.applicationWakeTime+' 完成线上提交的闹钟。':m.mode==='inperson'?'设置明早 '+D.applicationWakeTime+' 到校提交的闹钟；确认预约。' :m.mode==='arrival'?'设置明早 '+D.applicationWakeTime+' 去邮局核对寄件追踪的闹钟；尚未寄出请立刻联系学校。':'设置明早 '+D.applicationWakeTime+' 起床去邮局的闹钟。']];
   return steps.map(([offset,phase,action])=>({id:m.id+':'+offset,date:moveApplicationDate(m.date,offset),targetDate:m.date,title:m.title,note:m.note,mode:m.mode,phase,action,exam}));
  }).sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title))
 }
