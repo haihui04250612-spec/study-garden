@@ -151,7 +151,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
   <div class="sum"><small>距离 EJU</small><b id="daysEju">-- 天</b></div>
   <div class="sum"><small>今日完成</small><b id="doneRate">0 / 0</b></div>
   <div class="sum"><small>已刷真题</small><b id="paperCount">0 套</b></div>
-  <div class="sum"><small>Programming</small><b id="roadCount">0 / 6</b></div>
+  <div class="sum"><small id="fourthLabel">冲刺进度</small><b id="roadCount">0 / 90</b></div>
  </div>
  <div class="layout">
   <div>
@@ -201,14 +201,8 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
 <section class="view" id="eju">
  <div class="layout"><div>
   <div class="card"><div class="head"><h2>EJU 日本語 · 11/8 冲刺</h2><a class="softbtn" target="_blank" href="https://drive.weixin.qq.com/s?k=ADYA0AdwAA8oGftLXL">打开真题资料库 ↗</a></div>
-   <div class="week"><b>9/26–10/2 · Week 1</b>第二回真题 1 套。阅读 / 听力可拆开，必须完整复盘。</div>
-   <div class="week"><b>10/3–10/9 · Week 2</b>第二回真题 1 套。开始记录反复出现的薄弱点。</div>
-   <div class="week"><b>10/10–10/16 · Week 3</b>1 套 + 弱项专项。优先处理前三套暴露的问题。</div>
-   <div class="week"><b>10/17–10/23 · Week 4</b>第二回 2 套，至少一套记录各部分用时。</div>
-   <div class="week"><b>10/24–10/30 · Week 5</b>2 套完整计时，进入模拟模式。</div>
-   <div class="week"><b>10/31–11/6 · Week 6</b>2 套完整计时 + 深度复盘。</div>
-   <div class="week"><b>11/7</b>不刷新卷，只看错题、生词、语法和薄弱点。</div>
-   <div class="week"><b>11/8</b>EJU 本番。</div>
+   <p>周三、周五为日语日。下面列出 10 次具体练习；每天的勾选请到 <a href="#socV" onclick="showView(\'socV\');return false">逐日计划</a>，成绩仍在下方真题记录。</p>
+   <div id="jpDailyList"></div>
   </div>
   <div class="card" style="margin-top:14px"><h2>真题记录</h2><div style="overflow:auto"><table><thead><tr><th>日期</th><th>年份/回次</th><th>模式</th><th>阅读</th><th>听力</th><th>记述</th><th>薄弱点</th><th></th></tr></thead><tbody id="paperRows"></tbody></table></div></div>
  </div>
@@ -850,6 +844,7 @@ function renderSocStudy(){
   const prefix=weeks[day.date]?'<h3 class="planWeekTitle">'+weeks[day.date]+'</h3>':'';
   return prefix+'<details class="socDay" id="day-'+day.date+'" '+(day.date===today?'open':'')+'><summary><span><span class="dayKinds '+day.type+'">'+kind+'</span>'+day.date.slice(5)+' · '+esc(day.title)+'</span><span class="dayCount">'+(day.tasks.length?count+' / '+day.tasks.length:'')+'</span></summary><div class="dayBody">'+(day.minutes?'<p class="dayMeta">建议约 '+day.minutes+' 分钟 · 按步骤完成</p>':'<p class="dayMeta">'+(day.type==='rest'?'无必做任务。': '考试当天按会场安排。')+'</p>')+dailyRows(day)+(day.tasks.length?dailyLinks(day):'')+'</div></details>';
  }).join('')+'<p class="dailyTip">勾选保存在当前浏览器；研习室的课程、笔记与闪卡有独立进度。若某天没完成，优先做下一次的第一步，重复错题留到复盘日。每天的用时是建议，可随学校与课程时间调整。</p>';
+ jpDailyList.innerHTML=dailyPlan.filter(x=>x.type==='jp').map(day=>'<div class="week"><b>'+day.date.slice(5)+' · '+esc(day.title)+' · 约 '+day.minutes+' 分钟</b>'+day.tasks.map((t,i)=>'<div>'+Number(i+1)+'. '+esc(t)+'</div>').join('')+'</div>').join('');
 }
 
 function cycleInfo(){
@@ -998,7 +993,7 @@ function render(){
  let now=new Date();shownDate=fmt(now);dateTitle.textContent=now.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
  let dd=Math.max(0,Math.ceil((ejuDate-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000));daysEju.textContent=dd+' 天';countdown.textContent='EJU · '+dd+' 天';
  let k=T();document.body.classList.toggle('ejuFocus',k<='2026-11-08');seed(k);socTasks.innerHTML=taskHTML('EJU 文综');otherTasks.innerHTML=D.tasks[k].filter(x=>!['EJU 日本語','EJU 文综','Programming'].includes(x.cat)).map((x,i)=>`<label class="check ${x.done?'done':''}"><input type="checkbox" ${x.done?'checked':''} onchange="xDone('${k}',${i})"><span>${esc(x.cat)} · ${esc(x.text)}</span></label>`).join('');renderCycle();renderSocStudy();
- let plan=dailyPlan.find(x=>x.date===k), all=plan?.tasks||[],dn=all.filter((_,i)=>D.dailyEju?.[k]?.[i]).length;doneRate.textContent=dn+' / '+all.length;paperCount.textContent=D.papers.length+' 套';roadCount.textContent=D.road.filter(x=>x[1]).length+' / 6';
+ let plan=dailyPlan.find(x=>x.date===k), all=plan?.tasks||[],dn=all.filter((_,i)=>D.dailyEju?.[k]?.[i]).length;doneRate.textContent=dn+' / '+all.length;paperCount.textContent=D.papers.length+' 套';if(k<='2026-11-08'){fourthLabel.textContent='冲刺进度';const total=dailyPlan.reduce((n,p)=>n+p.tasks.length,0),completed=dailyPlan.reduce((n,p)=>n+p.tasks.filter((_,i)=>D.dailyEju?.[p.date]?.[i]).length,0);roadCount.textContent=completed+' / '+total}else{fourthLabel.textContent='Programming';roadCount.textContent=D.road.filter(x=>x[1]).length+' / 6'}
  timeline.innerHTML=(D.schedules[k]||[]).sort((a,b)=>a.time.localeCompare(b.time)).map((x,i)=>`<div class="slot"><time>${x.time}</time><span class="dot"></span><span>${esc(x.text)}</span><button class="softbtn" onclick="D.schedules['${k}'].splice(${i},1);persist()">×</button></div>`).join('')||'<div style="color:#999">今天还没有添加日程。</div>';
  dailyNote.value=D.notes[k]||''; codeLog.value=D.code[cycleKey()]||'';
  renderSoc();renderPapers();renderRoad();renderCal();renderEvents();renderStats();renderReading();
